@@ -6,6 +6,10 @@ set cpoptions&vim
 " Generates documentation based on available patterns in b:doge_patterns.
 function! doge#generate() abort
   let l:success = 0
+
+  " Store old search register
+  let s:oldsearch = @/
+
   if exists('b:doge_patterns')
     for l:pattern in get(b:, 'doge_patterns')
       if doge#generate#pattern(l:pattern) == v:false
@@ -59,6 +63,9 @@ function! doge#deactivate() abort
     endif
     unlet s:doge_noh
   endif
+
+  " Restore saved search register
+  let @/ = s:oldsearch
 
   if g:doge_comment_interactive == v:false || g:doge_buffer_mappings == v:false
     return
