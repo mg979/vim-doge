@@ -25,6 +25,12 @@ endfunction
 " @public
 " Activate doge buffer mappings, if option is set.
 function! doge#activate() abort
+  " Ensure hlsearch is disabled
+  if &hlsearch == v:true
+    set nohlsearch
+    let s:doge_noh = 1
+  endif
+
   if g:doge_comment_interactive == v:false || g:doge_buffer_mappings == v:false
     return
   endif
@@ -42,9 +48,17 @@ endfunction
 ""
 " @public
 " Deactivate doge mappings and unlet buffer variable.
-" Can print a message with the reason of deactivation/termination.
+" Restore hlsearch setting and search register.
 function! doge#deactivate() abort
   unlet b:doge_interactive
+
+  " Reenable hlsearch if it was previously disabled
+  if exists('s:doge_noh')
+    if &hlsearch == v:false
+      set hlsearch
+    endif
+    unlet s:doge_noh
+  endif
 
   if g:doge_comment_interactive == v:false || g:doge_buffer_mappings == v:false
     return
