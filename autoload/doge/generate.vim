@@ -81,12 +81,14 @@ function! doge#generate#pattern(pattern) abort
   " Create the comment by replacing the tokens in the template with their
   " corresponding values.
   let l:comment = []
-  for l:line in a:pattern['comment']['template'][b:doge_doc_standard]
+  for l:Line in a:pattern['comment']['template'][b:doge_doc_standard]
+    " check the type of the current line, it could be a funcref
+    let l:evaluated_line = type(l:Line) == 2 ? l:Line() : l:Line
     " If empty lines are present, just append them to ensure a whiteline is
     " inserted rather then completely removed. This allows us to insert some
     " whitelines in the comment template.
-    let l:line_replaced = doge#token#replace(l:tokens, l:line)
-    if empty(l:line) || empty(l:line_replaced)
+    let l:line_replaced = doge#token#replace(l:tokens, l:evaluated_line)
+    if empty(l:evaluated_line) || empty(l:line_replaced)
       call add(l:comment, '')
       continue
     elseif l:line_replaced ==# '-'
