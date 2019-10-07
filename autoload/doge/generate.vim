@@ -91,7 +91,7 @@ function! doge#generate#pattern(pattern) abort
     if empty(l:evaluated_line) || empty(l:line_replaced)
       call add(l:comment, '')
       continue
-    elseif l:line_replaced ==# '-'
+    elseif l:evaluated_line ==# '-' || l:line_replaced ==# '-'
       continue
     endif
 
